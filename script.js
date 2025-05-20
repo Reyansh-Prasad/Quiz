@@ -17,30 +17,120 @@ const questions = [
     ]
   },
   {
-    question: "What is 5 + 3?",
+    question: "Who was the king of the gods and the ruler of Mount Olympus?",
     answers: [
-      { text: "8", correct: true },
-      { text: "10", correct: false },
-      { text: "15", correct: false },
-      { text: "7", correct: false }
+      { text: "Aphrodite", correct: false },
+      { text: "Hades", correct: false },
+      { text: "Athena", correct: false },
+      { text: "Zeus", correct: true }
     ]
   },
   {
-    question: "What color do you get by mixing red and white?",
+    question: "Who was the goddess of love, beauty, and pleasure?",
     answers: [
-      { text: "Pink", correct: true },
-      { text: "Purple", correct: false },
-      { text: "Orange", correct: false },
-      { text: "Brown", correct: false }
+      { text: "Ares", correct: false },
+      { text: "Poseidon", correct: false },
+      { text: "Aphrodite", correct: true },
+      { text: "Hermes", correct: false }
     ]
   },
   {
-    question: "What is the capital of Japan?",
+    question: "Who was the god of the sea, earthquakes, and storms?",
     answers: [
-      { text: "Tokyo", correct: true },
-      { text: "Kyoto", correct: false },
-      { text: "Osaka", correct: false },
-      { text: "Hiroshima", correct: false }
+      { text: "Hermes", correct: false },
+      { text: "Poseidon", correct: true },
+      { text: "Eros", correct: false },
+      { text: "Hestia", correct: false }
+    ]
+  },
+  {
+    question: "Who was the goddess of wisdom, warfare, and crafts?",
+    answers: [
+      { text: "Ares", correct: false },
+      { text: "Athena", correct: true },
+      { text: "Demeter", correct: false },
+      { text: "Hecate", correct: false }
+    ]
+  },
+  {
+    question: "Who was the god of the Underworld and the dead?",
+    answers: [
+      { text: "Hades", correct: true },
+      { text: "Persephone", correct: false },
+      { text: "Eros", correct: false },
+      { text: "Zeus", correct: false }
+    ]
+  },
+  {
+    question: "Who was the messenger of the gods, known for his winged sandals?",
+    answers: [
+      { text: "Nike", correct: false },
+      { text: "Apollo", correct: false },
+      { text: "Iris", correct: false },
+      { text: "Hermes", correct: true }
+    ]
+  },
+  {
+    question: "Which element has the chemical symbol 'O'?",
+    answers: [
+      { text: "Oxygen", correct: true },
+      { text: "Gold", correct: false },
+      { text: "Silver", correct: false },
+      { text: "Osmium", correct: false }
+    ]
+  },
+  {
+    question: "Which element has the chemical symbol 'O'?",
+    answers: [
+      { text: "Oxygen", correct: true },
+      { text: "Gold", correct: false },
+      { text: "Silver", correct: false },
+      { text: "Osmium", correct: false }
+    ]
+  },
+  {
+    question: "Which element has the chemical symbol 'O'?",
+    answers: [
+      { text: "Oxygen", correct: true },
+      { text: "Gold", correct: false },
+      { text: "Silver", correct: false },
+      { text: "Osmium", correct: false }
+    ]
+  },
+  {
+    question: "Which element has the chemical symbol 'O'?",
+    answers: [
+      { text: "Oxygen", correct: true },
+      { text: "Gold", correct: false },
+      { text: "Silver", correct: false },
+      { text: "Osmium", correct: false }
+    ]
+  },
+  {
+    question: "Which element has the chemical symbol 'O'?",
+    answers: [
+      { text: "Oxygen", correct: true },
+      { text: "Gold", correct: false },
+      { text: "Silver", correct: false },
+      { text: "Osmium", correct: false }
+    ]
+  },
+  {
+    question: "Which element has the chemical symbol 'O'?",
+    answers: [
+      { text: "Oxygen", correct: true },
+      { text: "Gold", correct: false },
+      { text: "Silver", correct: false },
+      { text: "Osmium", correct: false }
+    ]
+  },
+  {
+    question: "Which element has the chemical symbol 'O'?",
+    answers: [
+      { text: "Oxygen", correct: true },
+      { text: "Gold", correct: false },
+      { text: "Silver", correct: false },
+      { text: "Osmium", correct: false }
     ]
   },
   {
