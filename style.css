@@ -45,11 +45,11 @@ button:hover:not(:disabled) {
 }
 
 .correct {
-  background-color: #4CAF50; /* softer green */
+  background-color: #64F367; /* softer green */
   color: white;
 }
 
 .wrong {
-  background-color: #e57373; /* lighter red */
+  background-color: #e75757; /* lighter red */
   color: white;
 }
