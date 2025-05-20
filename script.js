@@ -2,9 +2,13 @@ const startBtn = document.getElementById('start-btn');
 const nextBtn = document.getElementById('next-btn');
 const questionEl = document.getElementById('question');
 const answerButtons = document.getElementById('answer-buttons');
+const progressEl = document.getElementById('progress');
 
 let currentQuestionIndex = 0;
 let score = 0;
+let timer;
+const TIME_PER_QUESTION = 15; // seconds
+let timeLeft = TIME_PER_QUESTION;
 
 const questions = [
   {
@@ -144,6 +148,15 @@ const questions = [
   }
 ];
 
+// Shuffle utility function
+function shuffle(array) {
+  for (let i = array.length -1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 startBtn.addEventListener('click', startGame);
 nextBtn.addEventListener('click', () => {
   currentQuestionIndex++;
@@ -152,23 +165,31 @@ nextBtn.addEventListener('click', () => {
 
 function startGame() {
   startBtn.classList.add('hide');
-  currentQuestionIndex = 0;
   score = 0;
+  currentQuestionIndex = 0;
+  shuffle(questions);
   setNextQuestion();
 }
 
 function setNextQuestion() {
   resetState();
   if(currentQuestionIndex < questions.length){
+    showProgress();
     showQuestion(questions[currentQuestionIndex]);
+    startTimer();
   } else {
     showScore();
   }
 }
 
+function showProgress() {
+  progressEl.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+}
+
 function showQuestion(question) {
   questionEl.textContent = question.question;
-  question.answers.forEach(answer => {
+  const shuffledAnswers = shuffle([...question.answers]);
+  shuffledAnswers.forEach(answer => {
     const btn = document.createElement('button');
     btn.textContent = answer.text;
     btn.classList.add('btn');
@@ -181,31 +202,11 @@ function showQuestion(question) {
 }
 
 function resetState() {
+  clearInterval(timer);
   nextBtn.classList.add('hide');
   answerButtons.innerHTML = '';
-  questionEl.style.color = 'white'; // reset color for question
-}
-
-function selectAnswer(e) {
-  const selectedBtn = e.target;
-  const correct = selectedBtn.dataset.correct === 'true';
-  if (correct) score++;
-
-  Array.from(answerButtons.children).forEach(btn => {
-    btn.disabled = true;
-    if (btn.dataset.correct === 'true') {
-      btn.classList.add('correct');
-    } else {
-      btn.classList.add('wrong');
-    }
-  });
-
-  nextBtn.classList.remove('hide');
-}
-
-function showScore() {
-  resetState();
-  questionEl.textContent = `Quiz Over! Your score is ${score} out of ${questions.length}.`;
-  startBtn.textContent = 'Restart Quiz';
-  startBtn.classList.remove('hide');
-}
+  questionEl.style.color = 'white';
+  progressEl.textContent = '';
+  timeLeft = TIME_PER_QUESTION;
+  updateTimerDisplay();
+  const old
