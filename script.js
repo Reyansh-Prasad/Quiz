@@ -8,12 +8,12 @@ let score = 0;
 
 const questions = [
   {
-    question: "Who is the Greek god of the sea?",
+    question: "Who was the legendary king of Mycenae, whose capture prompted the Trojan War?",
     answers: [
-      { text: "Poseidon", correct: true },
-      { text: "Zeus", correct: false },
-      { text: "Apollo", correct: false },
-      { text: "Ares", correct: false }
+      { text: "Perseus", correct: false },
+      { text: "Helen", correct: false },
+      { text: "Menelaus ", correct: true },
+      { text: "Paris", correct: false }
     ]
   },
   {
@@ -71,75 +71,75 @@ const questions = [
     ]
   },
   {
-    question: "Which element has the chemical symbol 'O'?",
+    question: "What creature was a monstrous serpent with multiple heads, slain by Heracles?",
     answers: [
-      { text: "Oxygen", correct: true },
-      { text: "Gold", correct: false },
-      { text: "Silver", correct: false },
-      { text: "Osmium", correct: false }
+      { text: "Python", correct: false },
+      { text: "Hydra", correct: true },
+      { text: "Cobra", correct: false },
+      { text: "Snake", correct: false }
     ]
   },
   {
-    question: "Which element has the chemical symbol 'O'?",
+    question: "Who was the winged horse that was ridden by heroes in Greek mythology?",
     answers: [
-      { text: "Oxygen", correct: true },
-      { text: "Gold", correct: false },
-      { text: "Silver", correct: false },
-      { text: "Osmium", correct: false }
+      { text: "Arion", correct: false },
+      { text: "Xanthus and Balius", correct: false },
+      { text: "Pegasus", correct: true },
+      { text: "Hippocampi", correct: false }
     ]
   },
   {
-    question: "Which element has the chemical symbol 'O'?",
+    question: "Who was the greatest hero of the Trojan War, known for his invulnerability except for his heel?",
     answers: [
-      { text: "Oxygen", correct: true },
-      { text: "Gold", correct: false },
-      { text: "Silver", correct: false },
-      { text: "Osmium", correct: false }
+      { text: "Paris", correct: false },
+      { text: "Odysseus", correct: false },
+      { text: "Hector", correct: false },
+      { text: "Achilles", correct: true }
     ]
   },
   {
-    question: "Which element has the chemical symbol 'O'?",
+    question: "What was the name of the monstrous Gorgon whose gaze could turn people to stone?",
     answers: [
-      { text: "Oxygen", correct: true },
-      { text: "Gold", correct: false },
-      { text: "Silver", correct: false },
-      { text: "Osmium", correct: false }
+      { text: "Medusa", correct: true },
+      { text: "Chrysaor", correct: false },
+      { text: "Stheno", correct: false },
+      { text: "Euryale", correct: false }
     ]
   },
   {
-    question: "Which element has the chemical symbol 'O'?",
+    question: "Who was the wife of Zeus, the queen of the gods, and the goddess of marriage?",
     answers: [
-      { text: "Oxygen", correct: true },
-      { text: "Gold", correct: false },
-      { text: "Silver", correct: false },
-      { text: "Osmium", correct: false }
+      { text: "Metis", correct: false },
+      { text: "Hera", correct: true },
+      { text: "Themis", correct: false },
+      { text: "Leto", correct: false }
     ]
   },
   {
-    question: "Which element has the chemical symbol 'O'?",
+    question: "Who was the titan who was chained and tortured for bringing fire to mortals?",
     answers: [
-      { text: "Oxygen", correct: true },
-      { text: "Gold", correct: false },
-      { text: "Silver", correct: false },
-      { text: "Osmium", correct: false }
+      { text: "Prometheus", correct: true },
+      { text: "Krios", correct: false },
+      { text: "Atlas", correct: false },
+      { text: "Iapetus", correct: false }
     ]
   },
   {
-    question: "Which element has the chemical symbol 'O'?",
+    question: "Who was the Titan who ruled over the cosmos and swallowed his children to prevent them from overthrowing him?",
     answers: [
-      { text: "Oxygen", correct: true },
-      { text: "Gold", correct: false },
-      { text: "Silver", correct: false },
-      { text: "Osmium", correct: false }
+      { text: "Oceanus", correct: false },
+      { text: "Ouranos", correct: false },
+      { text: "Kronos", correct: true },
+      { text: "Hyperion", correct: false }
     ]
   },
   {
-    question: "Which element has the chemical symbol 'O'?",
+    question: "Who was the goddess of the hunt, wild animals, and the moon?",
     answers: [
-      { text: "Oxygen", correct: true },
-      { text: "Gold", correct: false },
-      { text: "Silver", correct: false },
-      { text: "Osmium", correct: false }
+      { text: "Hera", correct: false },
+      { text: "Demeter", correct: false },
+      { text: "Hestia", correct: false },
+      { text: "Artemis", correct: true }
     ]
   }
 ];
