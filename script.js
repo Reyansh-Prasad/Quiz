@@ -24,6 +24,33 @@ const questions = [
       { text: "15", correct: false },
       { text: "7", correct: false }
     ]
+  },
+  {
+    question: "What color do you get by mixing red and white?",
+    answers: [
+      { text: "Pink", correct: true },
+      { text: "Purple", correct: false },
+      { text: "Orange", correct: false },
+      { text: "Brown", correct: false }
+    ]
+  },
+  {
+    question: "What is the capital of Japan?",
+    answers: [
+      { text: "Tokyo", correct: true },
+      { text: "Kyoto", correct: false },
+      { text: "Osaka", correct: false },
+      { text: "Hiroshima", correct: false }
+    ]
+  },
+  {
+    question: "Which element has the chemical symbol 'O'?",
+    answers: [
+      { text: "Oxygen", correct: true },
+      { text: "Gold", correct: false },
+      { text: "Silver", correct: false },
+      { text: "Osmium", correct: false }
+    ]
   }
 ];
 
@@ -42,7 +69,11 @@ function startGame() {
 
 function setNextQuestion() {
   resetState();
-  showQuestion(questions[currentQuestionIndex]);
+  if(currentQuestionIndex < questions.length){
+    showQuestion(questions[currentQuestionIndex]);
+  } else {
+    showScore();
+  }
 }
 
 function showQuestion(question) {
@@ -62,19 +93,29 @@ function showQuestion(question) {
 function resetState() {
   nextBtn.classList.add('hide');
   answerButtons.innerHTML = '';
+  questionEl.style.color = 'white'; // reset color for question
 }
 
 function selectAnswer(e) {
   const selectedBtn = e.target;
   const correct = selectedBtn.dataset.correct === 'true';
   if (correct) score++;
+
   Array.from(answerButtons.children).forEach(btn => {
     btn.disabled = true;
     if (btn.dataset.correct === 'true') {
-      btn.style.backgroundColor = 'green';
+      btn.classList.add('correct');
     } else {
-      btn.style.backgroundColor = 'red';
+      btn.classList.add('wrong');
     }
   });
+
   nextBtn.classList.remove('hide');
+}
+
+function showScore() {
+  resetState();
+  questionEl.textContent = `Quiz Over! Your score is ${score} out of ${questions.length}.`;
+  startBtn.textContent = 'Restart Quiz';
+  startBtn.classList.remove('hide');
 }
