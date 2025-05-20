@@ -1,0 +1,38 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #282c34;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+#game-container {
+  max-width: 600px;
+  margin: auto;
+  background: #444;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.btn-grid {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.hide {
+  display: none;
+}
