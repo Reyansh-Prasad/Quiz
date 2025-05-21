@@ -21,6 +21,7 @@
     #question {
       font-size: 1.8rem;
       margin-bottom: 15px;
+      min-height: 60px;
     }
     #answer-buttons {
       display: flex;
@@ -50,7 +51,7 @@
       background-color: #dc3545 !important; /* red */
       color: white;
     }
-    #start-btn, #next-btn {
+    #start-btn, #next-btn, #music-toggle-btn {
       padding: 12px 24px;
       font-size: 1.2rem;
       cursor: pointer;
@@ -61,13 +62,10 @@
       margin: 10px 5px;
       transition: background-color 0.3s ease;
     }
-    #start-btn:hover, #next-btn:hover {
+    #start-btn:hover, #next-btn:hover, #music-toggle-btn:hover {
       background-color: #0056b3;
     }
-    #next-btn.hide {
-      display: none;
-    }
-    #start-btn.hide {
+    #next-btn.hide, #start-btn.hide {
       display: none;
     }
     #timer {
@@ -75,6 +73,13 @@
       font-size: 1.2rem;
       color: #FFD700;
       margin-top: 10px;
+      min-height: 28px;
+    }
+    #music-toggle-btn {
+      background-color: #28a745;
+    }
+    #music-toggle-btn.off {
+      background-color: #dc3545;
     }
   </style>
 </head>
@@ -84,9 +89,10 @@
   <div id="progress"></div>
   <h2 id="question">Press Start to begin</h2>
   <div id="answer-buttons"></div>
-  <div id="timer"></div>
   <button id="start-btn">Start Quiz</button>
   <button id="next-btn" class="hide">Next</button>
+  <button id="music-toggle-btn">Music ON</button>
+  <div id="timer"></div>
 
   <script>
     const startBtn = document.getElementById('start-btn');
@@ -95,12 +101,161 @@
     const answerButtons = document.getElementById('answer-buttons');
     const progressEl = document.getElementById('progress');
     const timerEl = document.getElementById('timer');
+    const musicToggleBtn = document.getElementById('music-toggle-btn');
 
     let currentQuestionIndex = 0;
     let score = 0;
     let timer;
-    const TIME_PER_QUESTION = 15;
+    const TIME_PER_QUESTION = 15; // seconds
     let timeLeft = TIME_PER_QUESTION;
+
+    // Audio files assumed to be in the same folder as this HTML
+    const bgMusic = new Audio('cyberpunk-music-277931.mp3');
+    const rightSound = new Audio('131662__bertrof__game-sound-correct_v2.wav');
+    const wrongSound = new Audio('131657__bertrof__game-sound-wrong.wav');
+
+    bgMusic.loop = true;
+    bgMusic.volume = 0.2;
+
+    let musicPlaying = false;
+
+    const questions = [
+      {
+        question: "Who was the legendary king of Mycenae, whose capture prompted the Trojan War?",
+        answers: [
+          { text: "Perseus", correct: false },
+          { text: "Helen", correct: false },
+          { text: "Menelaus", correct: true },
+          { text: "Paris", correct: false }
+        ]
+      },
+      {
+        question: "Who was the goddess of the hunt, wild animals, and the moon?",
+        answers: [
+          { text: "Hera", correct: false },
+          { text: "Demeter", correct: false },
+          { text: "Hestia", correct: false },
+          { text: "Artemis", correct: true }
+        ]
+      },
+      {
+        question: "Which hero completed 12 labors as a penance?",
+        answers: [
+          { text: "Achilles", correct: false },
+          { text: "Heracles", correct: true },
+          { text: "Odysseus", correct: false },
+          { text: "Jason", correct: false }
+        ]
+      },
+      {
+        question: "What is the name of the underworld river that souls must cross?",
+        answers: [
+          { text: "Styx", correct: true },
+          { text: "Acheron", correct: false },
+          { text: "Lethe", correct: false },
+          { text: "Phlegethon", correct: false }
+        ]
+      },
+      {
+        question: "Who is the god of the sea in Greek mythology?",
+        answers: [
+          { text: "Zeus", correct: false },
+          { text: "Poseidon", correct: true },
+          { text: "Hades", correct: false },
+          { text: "Apollo", correct: false }
+        ]
+      },
+      {
+        question: "Which titan was condemned to hold the sky on his shoulders?",
+        answers: [
+          { text: "Cronus", correct: false },
+          { text: "Atlas", correct: true },
+          { text: "Prometheus", correct: false },
+          { text: "Oceanus", correct: false }
+        ]
+      },
+    {
+        question: "Which wooden religious offering allowed the Greeks to get inside the walls of Troy?",
+        answers: [
+          { text: "Trojan Horse", correct: true },
+          { text: "Trojan Goat", correct: false },
+          { text: "Trojan Cow", correct: false },
+          { text: "Trojan Dog", correct: false }
+   ]
+      },
+    {
+        question: "What figure of Apollo stood from around 280 BC until destroyed by an earthquake around 224 BC?",
+        answers: [
+          { text: "Lighthouse of Alexandria", correct: false },
+          { text: "Statue of Liberty", correct: false },
+          { text: "Gilgamesh", correct: false },
+          { text: "Colossus of Rhodes", correct: true }
+   ]
+      },
+    {
+        question: "In Greek mythology, what was left in Pan­dora’s box after the evils, ills, diseases, and burdensome labor had escaped?",
+        answers: [
+          { text: "Charity", correct: false },
+          { text: "Faith", correct: false },
+          { text: "Hope", correct: true },
+          { text: "Tolerance", correct: false }
+   ]
+      },
+    {
+        question: "In Greek mythology, who was the father of Icarus?",
+        answers: [
+          { text: "Leonidas", correct: false },
+          { text: "Daedalus", correct: true },
+          { text: "Solon", correct: false },
+          { text: "Aristotle", correct: false }
+   ]
+      },
+    {
+        question: "Which character in Greek mythology sacrificed his daughter Iphigenia?",
+        answers: [
+          { text: "Dionysus", correct: false },
+          { text: "Zeus", correct: false },
+          { text: "Agamemnon", correct: true },
+          { text: "Alexander I", correct: false }
+   ]
+      },
+ {
+        question: "Who was the goddess of youth and spring in Greek mythology?",
+        answers: [
+          { text: "Aphrodite", correct: false },
+          { text: "Hebe", correct: true },
+          { text: "Poseidon", correct: false },
+          { text: "Artemis", correct: false }
+   ]
+      },
+ {
+        question: "Who was the famous monster of Greek legend, part woman, part beast, who dwelt near Thebes?",
+        answers: [
+          { text: "Sphinx", correct: true },
+          { text: "Typhon", correct: false },
+          { text: "Echidna", correct: false },
+          { text: "Medusa", correct: false }
+   ]
+      },
+ {
+        question: "Which Roman god of the sea is identified with the Greek god Poseidon?",
+        answers: [
+          { text: "Minerva", correct: false },
+          { text: "Juno", correct: false },
+          { text: "Jupiter", correct: false },
+          { text: "Neptune", correct: true }
+   ]
+      },
+    {
+        question: "According to Greek legend, which of the 9 muses was the muse of Comedy?",
+        answers: [
+          { text: "Calliope", correct: false },
+          { text: "Euterpe", correct: true },
+          { text: "Clio", correct: false },
+          { text: "Thalia", correct: false }
+  ]
+}
+];
 
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -115,8 +270,15 @@
       currentQuestionIndex++;
       setNextQuestion();
     });
+    musicToggleBtn.addEventListener('click', toggleMusic);
 
     function startGame() {
+      if (!musicPlaying) {
+        bgMusic.play();
+        musicPlaying = true;
+        musicToggleBtn.textContent = 'Music ON';
+        musicToggleBtn.classList.remove('off');
+      }
       startBtn.classList.add('hide');
       score = 0;
       currentQuestionIndex = 0;
@@ -132,6 +294,7 @@
         startTimer();
       } else {
         showScore();
+        pauseMusic();
       }
     }
 
@@ -159,149 +322,97 @@
       nextBtn.classList.add('hide');
       answerButtons.innerHTML = '';
       questionEl.style.color = 'white';
+      progressEl.textContent = '';
+      timerEl.textContent = '';
       timeLeft = TIME_PER_QUESTION;
       updateTimerDisplay();
     }
 
     function selectAnswer(e) {
+      clearInterval(timer);
       const selectedBtn = e.target;
       const correct = selectedBtn.dataset.correct === 'true';
+
       if (correct) {
+        selectedBtn.classList.add('correct');
+        rightSound.currentTime = 0;
+        rightSound.play();
         score++;
-        questionEl.style.color = 'lightgreen';
       } else {
-        questionEl.style.color = 'red';
+        selectedBtn.classList.add('wrong');
+        wrongSound.currentTime = 0;
+        wrongSound.play();
       }
+
       Array.from(answerButtons.children).forEach(button => {
         if (button.dataset.correct === 'true') {
           button.classList.add('correct');
-        } else {
-          button.classList.add('wrong');
         }
         button.disabled = true;
       });
-      clearInterval(timer);
+
       nextBtn.classList.remove('hide');
     }
 
     function showScore() {
-      resetState();
-      questionEl.textContent = `Quiz Completed! Your Score: ${score} / ${questions.length}`;
+      questionEl.textContent = `Quiz complete! Your score: ${score} / ${questions.length}`;
+      answerButtons.innerHTML = '';
+      progressEl.textContent = '';
+      timerEl.textContent = '';
       startBtn.textContent = 'Restart Quiz';
       startBtn.classList.remove('hide');
-    }
-
-    function updateTimerDisplay() {
-      if (timerEl) {
-        timerEl.textContent = `Time Left: ${timeLeft}s`;
-      }
+      nextBtn.classList.add('hide');
     }
 
     function startTimer() {
-      timeLeft = TIME_PER_QUESTION;
       updateTimerDisplay();
       timer = setInterval(() => {
         timeLeft--;
         updateTimerDisplay();
         if (timeLeft <= 0) {
           clearInterval(timer);
-          selectAnswer({ target: { dataset: {} } }); // Simulate wrong answer
+          disableAnswers();
+          nextBtn.classList.remove('hide');
+          timerEl.textContent = "Time's up!";
+          wrongSound.currentTime = 0;
+          wrongSound.play();
         }
       }, 1000);
     }
 
-    const questions = [
-      {
-        question: "Who was the legendary king of Mycenae, whose capture prompted the Trojan War?",
-        answers: [
-          { text: "Perseus", correct: false },
-          { text: "Helen", correct: false },
-          { text: "Menelaus", correct: true },
-          { text: "Paris", correct: false }
-        ]
-      },
-      {
-        question: "Who was the king of the gods and the ruler of Mount Olympus?",
-        answers: [
-          { text: "Aphrodite", correct: false },
-          { text: "Hades", correct: false },
-          { text: "Athena", correct: false },
-          { text: "Zeus", correct: true }
-        ]
-      },
-      {
-        question: "Who was the goddess of love, beauty, and pleasure?",
-        answers: [
-          { text: "Ares", correct: false },
-          { text: "Poseidon", correct: false },
-          { text: "Aphrodite", correct: true },
-          { text: "Hermes", correct: false }
-        ]
-      },
-      {
-        question: "Who was the god of the sea, earthquakes, and storms?",
-        answers: [
-          { text: "Hermes", correct: false },
-          { text: "Poseidon", correct: true },
-          { text: "Eros", correct: false },
-          { text: "Hestia", correct: false }
-        ]
-      },
-      {
-        question: "Who was the goddess of wisdom, warfare, and crafts?",
-        answers: [
-          { text: "Ares", correct: false },
-          { text: "Athena", correct: true },
-          { text: "Demeter", correct: false },
-          { text: "Hecate", correct: false }
-        ]
-      },
-      {
-        question: "Who was the god of the Underworld and the dead?",
-        answers: [
-          { text: "Hades", correct: true },
-          { text: "Persephone", correct: false },
-          { text: "Eros", correct: false },
-          { text: "Zeus", correct: false }
-        ]
-      },
-      {
-        question: "Who was the messenger of the gods, known for his winged sandals?",
-        answers: [
-          { text: "Nike", correct: false },
-          { text: "Apollo", correct: false },
-          { text: "Iris", correct: false },
-          { text: "Hermes", correct: true }
-        ]
-      },
-      {
-        question: "What creature was a monstrous serpent with multiple heads, slain by Heracles?",
-        answers: [
-          { text: "Python", correct: false },
-          { text: "Hydra", correct: true },
-          { text: "Cobra", correct: false },
-          { text: "Snake", correct: false }
-        ]
-      },
-      {
-        question: "Who was the winged horse that was ridden by heroes in Greek mythology?",
-        answers: [
-          { text: "Arion", correct: false },
-          { text: "Xanthus and Balius", correct: false },
-          { text: "Pegasus", correct: true },
-          { text: "Hippocampi", correct: false }
-        ]
-      },
-      {
-        question: "Who was the greatest hero of the Trojan War, known for his invulnerability except for his heel?",
-        answers: [
-          { text: "Paris", correct: false },
-          { text: "Odysseus", correct: false },
-          { text: "Hector", correct: false },
-          { text: "Achilles", correct: true }
-        ]
+    function updateTimerDisplay() {
+      timerEl.textContent = `Time left: ${timeLeft}s`;
+    }
+
+    function disableAnswers() {
+      Array.from(answerButtons.children).forEach(button => {
+        if (button.dataset.correct === 'true') {
+          button.classList.add('correct');
+        }
+        button.disabled = true;
+      });
+    }
+
+    function toggleMusic() {
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicPlaying = false;
+        musicToggleBtn.textContent = 'Music OFF';
+        musicToggleBtn.classList.add('off');
+      } else {
+        bgMusic.play();
+        musicPlaying = true;
+        musicToggleBtn.textContent = 'Music ON';
+        musicToggleBtn.classList.remove('off');
       }
-    ];
+    }
+
+    function pauseMusic() {
+      bgMusic.pause();
+      musicPlaying = false;
+      musicToggleBtn.textContent = 'Music OFF';
+      musicToggleBtn.classList.add('off');
+    }
   </script>
 </body>
 </html>
