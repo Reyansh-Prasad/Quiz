@@ -2,417 +2,171 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Greek Mythology Quiz</title>
   <style>
     body {
-      background-color: #1e1e2f;
-      color: white;
+      margin: 0;
       font-family: Arial, sans-serif;
-      text-align: center;
+      background: #111;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -2;
+      background-color: #0d0d0d;
+    }
+
+    .parallax-layer {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.05), transparent);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .quiz-container {
+      position: relative;
+      max-width: 600px;
+      margin: 100px auto;
+      background: rgba(0, 0, 0, 0.7);
       padding: 30px;
+      border-radius: 10px;
+      z-index: 1;
     }
-    #progress {
-      margin-bottom: 10px;
-      font-weight: bold;
-      font-size: 1.2rem;
-      color: #FFD700;
+
+    h1 {
+      text-align: center;
     }
-    #question {
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-      min-height: 60px;
+
+    .question {
+      margin: 20px 0;
     }
-    #answer-buttons {
-      display: flex;
-      flex-direction: column;
-      max-width: 400px;
-      margin: 0 auto 20px;
+
+    .options {
+      margin: 10px 0;
     }
-    .btn {
-      background-color: #2c2c44;
-      border: none;
-      color: white;
+
+    button {
       padding: 10px 20px;
-      margin: 5px 0;
-      cursor: pointer;
-      font-size: 1.1rem;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .btn:hover:not(:disabled) {
-      background-color: #444466;
-    }
-    .btn.correct {
-      background-color: #28a745 !important; /* green */
-      color: white;
-    }
-    .btn.wrong {
-      background-color: #dc3545 !important; /* red */
-      color: white;
-    }
-    #start-btn, #next-btn, #music-toggle-btn {
-      padding: 12px 24px;
-      font-size: 1.2rem;
-      cursor: pointer;
+      margin-top: 15px;
+      background-color: #6c63ff;
       border: none;
-      border-radius: 6px;
-      background-color: #007bff;
       color: white;
-      margin: 10px 5px;
-      transition: background-color 0.3s ease;
+      border-radius: 5px;
+      cursor: pointer;
     }
-    #start-btn:hover, #next-btn:hover, #music-toggle-btn:hover {
-      background-color: #0056b3;
-    }
-    #next-btn.hide, #start-btn.hide {
-      display: none;
-    }
-    #timer {
-      font-weight: bold;
-      font-size: 1.2rem;
-      color: #FFD700;
-      margin-top: 10px;
-      min-height: 28px;
-    }
-    #music-toggle-btn {
-      background-color: #28a745;
-    }
-    #music-toggle-btn.off {
-      background-color: #dc3545;
+
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+  <div id="particles-js"></div>
+  <div class="parallax-layer" data-depth="0.1"></div>
+  <div class="parallax-layer" data-depth="0.2"></div>
 
-  <h1>Greek Mythology Quiz</h1>
-  <div id="progress"></div>
-  <h2 id="question">Press Start to begin</h2>
-  <div id="answer-buttons"></div>
-  <button id="start-btn">Start Quiz</button>
-  <button id="next-btn" class="hide">Next</button>
-  <button id="music-toggle-btn">Music ON</button>
-  <div id="timer"></div>
+  <div class="quiz-container">
+    <h1>Greek Mythology Quiz</h1>
+    <div id="quiz">
+      <div class="question">1. Who is the king of the Greek gods?</div>
+      <div class="options">
+        <label><input type="radio" name="q1" value="Ares"> Ares</label><br>
+        <label><input type="radio" name="q1" value="Zeus"> Zeus</label><br>
+        <label><input type="radio" name="q1" value="Apollo"> Apollo</label>
+      </div>
 
+      <div class="question">2. Who is the goddess of wisdom?</div>
+      <div class="options">
+        <label><input type="radio" name="q2" value="Hera"> Hera</label><br>
+        <label><input type="radio" name="q2" value="Aphrodite"> Aphrodite</label><br>
+        <label><input type="radio" name="q2" value="Athena"> Athena</label>
+      </div>
+
+      <button onclick="checkAnswers()">Submit</button>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="bg-music" src="cyberpunk-music-277931.mp3" loop autoplay></audio>
+  <audio id="correct-sound" src="131662__bertrof__game-sound-correct_v2.wav"></audio>
+  <audio id="wrong-sound" src="131657__bertrof__game-sound-wrong.wav"></audio>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script>
-    const startBtn = document.getElementById('start-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const questionEl = document.getElementById('question');
-    const answerButtons = document.getElementById('answer-buttons');
-    const progressEl = document.getElementById('progress');
-    const timerEl = document.getElementById('timer');
-    const musicToggleBtn = document.getElementById('music-toggle-btn');
-
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let timer;
-    const TIME_PER_QUESTION = 15; // seconds
-    let timeLeft = TIME_PER_QUESTION;
-
-    // Audio files assumed to be in the same folder as this HTML
-    const bgMusic = new Audio('cyberpunk-music-277931.mp3');
-    const rightSound = new Audio('131662__bertrof__game-sound-correct_v2.wav');
-    const wrongSound = new Audio('131657__bertrof__game-sound-wrong.wav');
-
-    bgMusic.loop = true;
-    bgMusic.volume = 0.2;
-
-    let musicPlaying = false;
-
-    const questions = [
-      {
-        question: "Who was the legendary king of Mycenae, whose capture prompted the Trojan War?",
-        answers: [
-          { text: "Perseus", correct: false },
-          { text: "Helen", correct: false },
-          { text: "Menelaus", correct: true },
-          { text: "Paris", correct: false }
-        ]
+    // Particle config
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80 },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.3 },
+        size: { value: 3 },
+        move: { enable: true, speed: 1.5 }
       },
-      {
-        question: "Who was the goddess of the hunt, wild animals, and the moon?",
-        answers: [
-          { text: "Hera", correct: false },
-          { text: "Demeter", correct: false },
-          { text: "Hestia", correct: false },
-          { text: "Artemis", correct: true }
-        ]
-      },
-      {
-        question: "Which hero completed 12 labors as a penance?",
-        answers: [
-          { text: "Achilles", correct: false },
-          { text: "Heracles", correct: true },
-          { text: "Odysseus", correct: false },
-          { text: "Jason", correct: false }
-        ]
-      },
-      {
-        question: "What is the name of the underworld river that souls must cross?",
-        answers: [
-          { text: "Styx", correct: true },
-          { text: "Acheron", correct: false },
-          { text: "Lethe", correct: false },
-          { text: "Phlegethon", correct: false }
-        ]
-      },
-      {
-        question: "Who is the god of the sea in Greek mythology?",
-        answers: [
-          { text: "Zeus", correct: false },
-          { text: "Poseidon", correct: true },
-          { text: "Hades", correct: false },
-          { text: "Apollo", correct: false }
-        ]
-      },
-      {
-        question: "Which titan was condemned to hold the sky on his shoulders?",
-        answers: [
-          { text: "Cronus", correct: false },
-          { text: "Atlas", correct: true },
-          { text: "Prometheus", correct: false },
-          { text: "Oceanus", correct: false }
-        ]
-      },
-    {
-        question: "Which wooden religious offering allowed the Greeks to get inside the walls of Troy?",
-        answers: [
-          { text: "Trojan Horse", correct: true },
-          { text: "Trojan Goat", correct: false },
-          { text: "Trojan Cow", correct: false },
-          { text: "Trojan Dog", correct: false }
-   ]
-      },
-    {
-        question: "What figure of Apollo stood from around 280 BC until destroyed by an earthquake around 224 BC?",
-        answers: [
-          { text: "Lighthouse of Alexandria", correct: false },
-          { text: "Statue of Liberty", correct: false },
-          { text: "Gilgamesh", correct: false },
-          { text: "Colossus of Rhodes", correct: true }
-   ]
-      },
-    {
-        question: "In Greek mythology, what was left in Pan­dora’s box after the evils, ills, diseases, and burdensome labor had escaped?",
-        answers: [
-          { text: "Charity", correct: false },
-          { text: "Faith", correct: false },
-          { text: "Hope", correct: true },
-          { text: "Tolerance", correct: false }
-   ]
-      },
-    {
-        question: "In Greek mythology, who was the father of Icarus?",
-        answers: [
-          { text: "Leonidas", correct: false },
-          { text: "Daedalus", correct: true },
-          { text: "Solon", correct: false },
-          { text: "Aristotle", correct: false }
-   ]
-      },
-    {
-        question: "Which character in Greek mythology sacrificed his daughter Iphigenia?",
-        answers: [
-          { text: "Dionysus", correct: false },
-          { text: "Zeus", correct: false },
-          { text: "Agamemnon", correct: true },
-          { text: "Alexander I", correct: false }
-   ]
-      },
- {
-        question: "Who was the goddess of youth and spring in Greek mythology?",
-        answers: [
-          { text: "Aphrodite", correct: false },
-          { text: "Hebe", correct: true },
-          { text: "Poseidon", correct: false },
-          { text: "Artemis", correct: false }
-   ]
-      },
- {
-        question: "Who was the famous monster of Greek legend, part woman, part beast, who dwelt near Thebes?",
-        answers: [
-          { text: "Sphinx", correct: true },
-          { text: "Typhon", correct: false },
-          { text: "Echidna", correct: false },
-          { text: "Medusa", correct: false }
-   ]
-      },
- {
-        question: "Which Roman god of the sea is identified with the Greek god Poseidon?",
-        answers: [
-          { text: "Minerva", correct: false },
-          { text: "Juno", correct: false },
-          { text: "Jupiter", correct: false },
-          { text: "Neptune", correct: true }
-   ]
-      },
-    {
-        question: "According to Greek legend, which of the 9 muses was the muse of Comedy?",
-        answers: [
-          { text: "Calliope", correct: false },
-          { text: "Euterpe", correct: true },
-          { text: "Clio", correct: false },
-          { text: "Thalia", correct: false }
-  ]
-}
-];
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" }
+        },
+        modes: {
+          repulse: { distance: 100 },
+          push: { particles_nb: 4 }
+        }
       }
-      return array;
-    }
-
-    startBtn.addEventListener('click', startGame);
-    nextBtn.addEventListener('click', () => {
-      currentQuestionIndex++;
-      setNextQuestion();
     });
-    musicToggleBtn.addEventListener('click', toggleMusic);
 
-    function startGame() {
-      if (!musicPlaying) {
-        bgMusic.play();
-        musicPlaying = true;
-        musicToggleBtn.textContent = 'Music ON';
-        musicToggleBtn.classList.remove('off');
-      }
-      startBtn.classList.add('hide');
-      score = 0;
-      currentQuestionIndex = 0;
-      shuffle(questions);
-      setNextQuestion();
-    }
-
-    function setNextQuestion() {
-      resetState();
-      if (currentQuestionIndex < questions.length) {
-        showProgress();
-        showQuestion(questions[currentQuestionIndex]);
-        startTimer();
-      } else {
-        showScore();
-        pauseMusic();
-      }
-    }
-
-    function showProgress() {
-      progressEl.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
-    }
-
-    function showQuestion(question) {
-      questionEl.textContent = question.question;
-      const shuffledAnswers = shuffle([...question.answers]);
-      shuffledAnswers.forEach(answer => {
-        const btn = document.createElement('button');
-        btn.textContent = answer.text;
-        btn.classList.add('btn');
-        if (answer.correct) {
-          btn.dataset.correct = true;
-        }
-        btn.addEventListener('click', selectAnswer);
-        answerButtons.appendChild(btn);
+    // Parallax effect
+    document.addEventListener('mousemove', e => {
+      document.querySelectorAll('.parallax-layer').forEach(layer => {
+        const depth = layer.getAttribute('data-depth');
+        const x = (e.clientX - window.innerWidth / 2) * depth;
+        const y = (e.clientY - window.innerHeight / 2) * depth;
+        layer.style.transform = `translate(${x}px, ${y}px)`;
       });
-    }
+    });
 
-    function resetState() {
-      clearInterval(timer);
-      nextBtn.classList.add('hide');
-      answerButtons.innerHTML = '';
-      questionEl.style.color = 'white';
-      progressEl.textContent = '';
-      timerEl.textContent = '';
-      timeLeft = TIME_PER_QUESTION;
-      updateTimerDisplay();
-    }
+    // Quiz logic
+    function checkAnswers() {
+      const answers = {
+        q1: "Zeus",
+        q2: "Athena"
+      };
 
-    function selectAnswer(e) {
-      clearInterval(timer);
-      const selectedBtn = e.target;
-      const correct = selectedBtn.dataset.correct === 'true';
+      let score = 0;
+      let total = 2;
 
-      if (correct) {
-        selectedBtn.classList.add('correct');
-        rightSound.currentTime = 0;
-        rightSound.play();
-        score++;
-      } else {
-        selectedBtn.classList.add('wrong');
-        wrongSound.currentTime = 0;
-        wrongSound.play();
+      for (let q in answers) {
+        let selected = document.querySelector(`input[name="${q}"]:checked`);
+        if (selected && selected.value === answers[q]) {
+          score++;
+          document.getElementById("correct-sound").play();
+        } else {
+          document.getElementById("wrong-sound").play();
+        }
       }
 
-      Array.from(answerButtons.children).forEach(button => {
-        if (button.dataset.correct === 'true') {
-          button.classList.add('correct');
-        }
-        button.disabled = true;
-      });
-
-      nextBtn.classList.remove('hide');
+      document.getElementById("result").innerText = `You scored ${score} out of ${total}!`;
     }
 
-    function showScore() {
-      questionEl.textContent = `Quiz complete! Your score: ${score} / ${questions.length}`;
-      answerButtons.innerHTML = '';
-      progressEl.textContent = '';
-      timerEl.textContent = '';
-      startBtn.textContent = 'Restart Quiz';
-      startBtn.classList.remove('hide');
-      nextBtn.classList.add('hide');
-    }
-
-    function startTimer() {
-      updateTimerDisplay();
-      timer = setInterval(() => {
-        timeLeft--;
-        updateTimerDisplay();
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          disableAnswers();
-          nextBtn.classList.remove('hide');
-          timerEl.textContent = "Time's up!";
-          wrongSound.currentTime = 0;
-          wrongSound.play();
-        }
-      }, 1000);
-    }
-
-    function updateTimerDisplay() {
-      timerEl.textContent = `Time left: ${timeLeft}s`;
-    }
-
-    function disableAnswers() {
-      Array.from(answerButtons.children).forEach(button => {
-        if (button.dataset.correct === 'true') {
-          button.classList.add('correct');
-        }
-        button.disabled = true;
-      });
-    }
-
-    function toggleMusic() {
-      if (musicPlaying) {
-        bgMusic.pause();
-        musicPlaying = false;
-        musicToggleBtn.textContent = 'Music OFF';
-        musicToggleBtn.classList.add('off');
-      } else {
-        bgMusic.play();
-        musicPlaying = true;
-        musicToggleBtn.textContent = 'Music ON';
-        musicToggleBtn.classList.remove('off');
-      }
-    }
-
-    function pauseMusic() {
-      bgMusic.pause();
-      musicPlaying = false;
-      musicToggleBtn.textContent = 'Music OFF';
-      musicToggleBtn.classList.add('off');
-    }
+    // Autoplay fix for mobile
+    window.addEventListener('click', () => {
+      document.getElementById("bg-music").play();
+    });
   </script>
 </body>
 </html>
