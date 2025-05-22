@@ -5,42 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Greek Mythology Quiz</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      overflow-x: hidden;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      background: #000;
     }
 
     #particles-js {
       position: fixed;
       width: 100%;
       height: 100%;
-      top: 0;
-      left: 0;
-      z-index: -2;
-      background-color: #0d0d0d;
-    }
-
-    .parallax-layer {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background: radial-gradient(circle, rgba(255,255,255,0.05), transparent);
-      pointer-events: none;
       z-index: -1;
     }
 
     .quiz-container {
       position: relative;
-      max-width: 600px;
-      margin: 100px auto;
-      background: rgba(0, 0, 0, 0.7);
       padding: 30px;
-      border-radius: 10px;
+      max-width: 700px;
+      margin: auto;
+      background: rgba(0,0,0,0.7);
+      border-radius: 15px;
+      margin-top: 60px;
       z-index: 1;
     }
 
@@ -49,124 +38,167 @@
     }
 
     .question {
-      margin: 20px 0;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
     }
 
     .options {
-      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
     }
 
-    button {
-      padding: 10px 20px;
-      margin-top: 15px;
-      background-color: #6c63ff;
+    .options button {
+      margin: 10px 0;
+      padding: 12px;
       border: none;
+      border-radius: 10px;
+      background-color: #1e90ff;
       color: white;
-      border-radius: 5px;
+      font-size: 1rem;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .options button:hover {
+      background-color: #4169e1;
+    }
+
+    #nextBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      display: none;
     }
 
     #result {
-      margin-top: 20px;
-      font-size: 20px;
       text-align: center;
+      font-size: 1.3rem;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div id="particles-js"></div>
-  <div class="parallax-layer" data-depth="0.1"></div>
-  <div class="parallax-layer" data-depth="0.2"></div>
 
-  <div class="quiz-container">
-    <h1>Greek Mythology Quiz</h1>
-    <div id="quiz">
-      <div class="question">1. Who is the king of the Greek gods?</div>
-      <div class="options">
-        <label><input type="radio" name="q1" value="Ares"> Ares</label><br>
-        <label><input type="radio" name="q1" value="Zeus"> Zeus</label><br>
-        <label><input type="radio" name="q1" value="Apollo"> Apollo</label>
-      </div>
+<div id="particles-js"></div>
 
-      <div class="question">2. Who is the goddess of wisdom?</div>
-      <div class="options">
-        <label><input type="radio" name="q2" value="Hera"> Hera</label><br>
-        <label><input type="radio" name="q2" value="Aphrodite"> Aphrodite</label><br>
-        <label><input type="radio" name="q2" value="Athena"> Athena</label>
-      </div>
-
-      <button onclick="checkAnswers()">Submit</button>
-      <div id="result"></div>
-    </div>
+<div class="quiz-container">
+  <h1>Greek Mythology Quiz</h1>
+  <div id="quiz">
+    <div class="question" id="question">Loading question...</div>
+    <div class="options" id="options"></div>
+    <button id="nextBtn" onclick="nextQuestion()">Next</button>
+    <div id="result"></div>
   </div>
+</div>
 
-  <!-- Audio -->
-  <audio id="bg-music" src="cyberpunk-music-277931.mp3" loop autoplay></audio>
-  <audio id="correct-sound" src="131662__bertrof__game-sound-correct_v2.wav"></audio>
-  <audio id="wrong-sound" src="131657__bertrof__game-sound-wrong.wav"></audio>
+<audio id="bgMusic" src="cyberpunk-music-277931.mp3" loop></audio>
+<audio id="correctSound" src="correct.mp3"></audio>
+<audio id="wrongSound" src="wrong.mp3"></audio>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script>
-    // Particle config
-    particlesJS("particles-js", {
-      particles: {
-        number: { value: 80 },
-        color: { value: "#ffffff" },
-        shape: { type: "circle" },
-        opacity: { value: 0.3 },
-        size: { value: 3 },
-        move: { enable: true, speed: 1.5 }
-      },
-      interactivity: {
-        events: {
-          onhover: { enable: true, mode: "repulse" },
-          onclick: { enable: true, mode: "push" }
-        },
-        modes: {
-          repulse: { distance: 100 },
-          push: { particles_nb: 4 }
-        }
-      }
-    });
+<!-- particles.js -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+particlesJS.load('particles-js', 'https://cdn.jsdelivr.net/gh/VincentGarreau/particles.js/particles.json', function() {
+  console.log('particles.js loaded');
+});
+</script>
 
-    // Parallax effect
-    document.addEventListener('mousemove', e => {
-      document.querySelectorAll('.parallax-layer').forEach(layer => {
-        const depth = layer.getAttribute('data-depth');
-        const x = (e.clientX - window.innerWidth / 2) * depth;
-        const y = (e.clientY - window.innerHeight / 2) * depth;
-        layer.style.transform = `translate(${x}px, ${y}px)`;
-      });
-    });
+<script>
+const questions = [
+  {
+    question: "Who is the king of the Greek gods?",
+    options: ["Zeus", "Hades", "Apollo", "Poseidon"],
+    answer: "Zeus"
+  },
+  {
+    question: "Who is the Greek goddess of wisdom?",
+    options: ["Aphrodite", "Artemis", "Athena", "Demeter"],
+    answer: "Athena"
+  },
+  {
+    question: "What is the name of the Greek god of the sea?",
+    options: ["Hermes", "Ares", "Poseidon", "Hephaestus"],
+    answer: "Poseidon"
+  }
+];
 
-    // Quiz logic
-    function checkAnswers() {
-      const answers = {
-        q1: "Zeus",
-        q2: "Athena"
-      };
+let currentQuestion = 0;
+let score = 0;
 
-      let score = 0;
-      let total = 2;
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+const resultEl = document.getElementById("result");
 
-      for (let q in answers) {
-        let selected = document.querySelector(`input[name="${q}"]:checked`);
-        if (selected && selected.value === answers[q]) {
-          score++;
-          document.getElementById("correct-sound").play();
-        } else {
-          document.getElementById("wrong-sound").play();
-        }
-      }
+const bgMusic = document.getElementById("bgMusic");
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
 
-      document.getElementById("result").innerText = `You scored ${score} out of ${total}!`;
+bgMusic.play().catch(() => {
+  document.body.addEventListener('click', () => {
+    bgMusic.play();
+  }, { once: true });
+});
+
+function showQuestion() {
+  let q = questions[currentQuestion];
+  questionEl.textContent = q.question;
+  optionsEl.innerHTML = "";
+
+  q.options.forEach(opt => {
+    let btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(opt);
+    optionsEl.appendChild(btn);
+  });
+
+  nextBtn.style.display = "none";
+}
+
+function checkAnswer(selected) {
+  let correct = questions[currentQuestion].answer;
+  if (selected === correct) {
+    score++;
+    correctSound.play();
+  } else {
+    wrongSound.play();
+  }
+
+  Array.from(optionsEl.children).forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === correct) {
+      btn.style.backgroundColor = "#28a745";
+    } else if (btn.textContent === selected) {
+      btn.style.backgroundColor = "#dc3545";
     }
+  });
 
-    // Autoplay fix for mobile
-    window.addEventListener('click', () => {
-      document.getElementById("bg-music").play();
-    });
-  </script>
+  nextBtn.style.display = "block";
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  questionEl.style.display = "none";
+  optionsEl.style.display = "none";
+  nextBtn.style.display = "none";
+  resultEl.textContent = `You scored ${score} out of ${questions.length}!`;
+}
+
+showQuestion();
+</script>
+
 </body>
 </html>
